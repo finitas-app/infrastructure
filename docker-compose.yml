@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+  frontend-api:
+    build: ../finitas-frontend-api/.
+    ports:
+      - "192.168.0.156:8080:8080"
+    depends_on:
+      - receipt-processor
+      - finance-manager-store
+      - room-manager-mongo-db
+  receipt-processor:
+    build: ../receipt-processor/.
+    ports:
+      - "8081:8081"
+  finance-manager-store:
+    build: ../finance-manager-store/.
+    ports:
+      - "8082:8082"
+    depends_on:
+      - finance-manager-store-mongo-db
+  finance-manager-store-mongo-db:
+    image: mongo:7.0.4
+    volumes:
+      - "/var/lib/finance-manager-store-mongo-db:/data/db"
+    ports:
+      - "27017:27017"
+  room-manager:
+    build: ../room-manageer/.
+    ports:
+      - "8083:8083"
+  room-manager-mongo-db:
+    image: mongo:7.0.4
+    volumes:
+      - "/var/lib/room-manager-mongo-db:/data/db"
+    ports:
+      - "27018:27017"
