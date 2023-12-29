@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fms-db-service
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: fms-db
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fms-db
+spec:
+  selector:
+    matchLabels:
+      app: fms-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fms-db
+    spec:
+      containers:
+        - image: mongo:7.0.4
+          name: fms-db
+          ports:
+            - containerPort: 27017
+              name: fms-db
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rm-db-service
+spec:
+  ports:
+    - port: 27017
+      targetPort: 27017
+  selector:
+    app: rm-db
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rm-db
+spec:
+  selector:
+    matchLabels:
+      app: rm-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rm-db
+    spec:
+      containers:
+        - image: mongo:7.0.4
+          name: rm-db
+          ports:
+            - containerPort: 27017
+              name: rm-db

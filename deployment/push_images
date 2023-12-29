@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cd ..
+./build
+cd ./deployment || exit
+
+#build
+docker buildx build --push --platform linux/amd64 -t daniilgrebenuk2002/finance-manager-store ../../finance-manager-store/.
+docker buildx build --push --platform linux/amd64 -t daniilgrebenuk2002/finitas-frontend-api ../../finitas-frontend-api/.
+docker buildx build --push --platform linux/amd64 -t daniilgrebenuk2002/room-manageer ../../room-manageer/.
+docker buildx build --push --platform linux/amd64 -t daniilgrebenuk2002/receipt-processor ../../receipt-processor/.

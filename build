@@ -1,0 +1,9 @@
+#!/bin/sh
+
+for projectName in finitas-frontend-api finance-manager-store room-manageer; do
+  echo "Project $projectName - building..."
+  cd ../$projectName || exit
+  ./gradlew clean build -x test
+  echo "Project $projectName - building finished!"
+done
+

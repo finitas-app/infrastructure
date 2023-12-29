@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rp-service
+spec:
+  selector:
+    app: rp
+  ports:
+    - port: 8081
+      targetPort: 8081
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rp
+spec:
+  selector:
+    matchLabels:
+      app: rp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rp
+    spec:
+      containers:
+        - image: daniilgrebenuk2002/receipt-processor
+          name: rp
+          ports:
+            - containerPort: 8081
+              name: rp
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fms-service
+spec:
+  selector:
+    app: fms
+  ports:
+    - port: 8082
+      targetPort: 8082
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fms
+spec:
+  selector:
+    matchLabels:
+      app: fms
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fms
+    spec:
+      containers:
+        - image: daniilgrebenuk2002/finance-manager-store
+          name: fms
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kub"
+          ports:
+            - containerPort: 8082
+              name: fms
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rm-service
+spec:
+  selector:
+    app: rm
+  ports:
+    - port: 8083
+      targetPort: 8083
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rm
+spec:
+  selector:
+    matchLabels:
+      app: rm
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rm
+    spec:
+      containers:
+        - image: daniilgrebenuk2002/room-manageer
+          imagePullPolicy: Always
+          name: rm
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: "-Dprofile=kub"
+          ports:
+            - containerPort: 8083
+              name: rm
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fa-service
+spec:
+  selector:
+    app: fa
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fa
+spec:
+  selector:
+    matchLabels:
+      app: fa
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fa
+    spec:
+      containers:
+        - image: daniilgrebenuk2002/finitas-frontend-api
+          imagePullPolicy: Always
+          name: fa
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: "-Dprofile=kub"
+          ports:
+            - containerPort: 8080
+              name: rm
+
