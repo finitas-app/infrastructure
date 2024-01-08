@@ -10,6 +10,7 @@ spec:
     app: fms-db
   type: ClusterIP
 
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -25,12 +26,26 @@ spec:
       labels:
         app: fms-db
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - image: mongo:7.0.4
           name: fms-db
+          command:
+            - mongod
+            - "--bind_ip_all"
           ports:
             - containerPort: 27017
               name: fms-db
+          volumeMounts:
+            - name: volume
+              mountPath: /data/db
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: fms-db-volume
+
+---
+
 
 ---
 apiVersion: v1
@@ -60,9 +75,20 @@ spec:
       labels:
         app: rm-db
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
         - image: mongo:7.0.4
           name: rm-db
+          command:
+            - mongod
+            - "--bind_ip_all"
           ports:
             - containerPort: 27017
               name: rm-db
+          volumeMounts:
+            - name: volume1
+              mountPath: /data/db
+      volumes:
+        - name: volume1
+          persistentVolumeClaim:
+            claimName: rm-db-volume

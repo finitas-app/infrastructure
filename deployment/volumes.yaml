@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-fms
+  labels:
+    usage: pv-fms
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: managed-premium-retain
+  azureFile:
+    secretName: azure-secret
+    shareName: finitas-fms
+    readOnly: false
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-rm
+  labels:
+    usage: pv-rm
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: managed-premium-retain
+  azureFile:
+    secretName: azure-secret
+    shareName: finitas-rm
+    readOnly: false
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fms-db-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: managed-premium-retain
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      usage: pv-fms
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rm-db-volume
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: managed-premium-retain
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      usage: pv-rm
