@@ -1,0 +1,48 @@
+version: "3.7"
+services:
+  frontend-api:
+    build:
+      context: ../../finitas-frontend-api/.
+      dockerfile: ./dockerSideBuild/Dockerfile
+    ports:
+      - "192.168.64.1:8080:8080"
+    environment:
+      - 'JDK_JAVA_OPTIONS=-Dprofile=docker'
+    depends_on:
+      - receipt-processor
+      - finance-manager-store
+      - room-manager-mongo-db
+  receipt-processor:
+    build: ../../receipt-processor/.
+    ports:
+      - "8081:8081"
+  finance-manager-store:
+    build:
+      context: ../../finance-manager-store/.
+      dockerfile: ./dockerSideBuild/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - finance-manager-store-mongo-db
+  finance-manager-store-mongo-db:
+    image: mongo:7.0.4
+    volumes:
+      - "/var/lib/finance-manager-store-mongo-db:/data/db"
+    ports:
+      - "27017:27017"
+  room-manager:
+    build:
+      context: ../../room-manageer/.
+      dockerfile: ./dockerSideBuild/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - 'JDK_JAVA_OPTIONS=-Dprofile=docker'
+  room-manager-mongo-db:
+    image: mongo:7.0.4
+    volumes:
+      - "/var/lib/room-manager-mongo-db:/data/db"
+    ports:
+      - "27018:27017"
