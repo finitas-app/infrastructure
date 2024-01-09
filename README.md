@@ -21,8 +21,8 @@ If you fail to build the project, try doing it with Docker side build and run. T
 2. You should find out your local ip address.Write the command `ifconfig`, in the case of Windows `ipconfig`, and find
 an address starting with `192.168.`. Then go to the file docker-compose.yml located in the root directory of the infrastructure
 project and replace the host on line 6 with your ip address. For example, if my address is `192.168.64.1`, the result should be `"192.168.64.1:8080:8080"`.
-This is necessary to start the system that will have your ip address as host. This will give you the ability to throw
-requests not only from the local machine but also for example from your phone if you run a mobile application. 
+This is necessary to start the system that will have your ip address as host. This will give you the ability to make
+requests not only from the local machine but also for example from your phone if you run a mobile application, but you must be connected to the same network. 
 If you want to run the project locally and make requests only with a local http client, you can leave only `"8080:8080"`.
 
 3. Write the command `docker compose up -d`
