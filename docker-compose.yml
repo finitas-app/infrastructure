@@ -7,9 +7,14 @@ services:
     environment:
       - 'JDK_JAVA_OPTIONS=-Dprofile=docker'
     depends_on:
+      - user-notify-balancer
       - receipt-processor
       - finance-manager-store
       - room-manager-mongo-db
+  user-notify-balancer:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
   receipt-processor:
     build: ../receipt-processor/.
     ports:

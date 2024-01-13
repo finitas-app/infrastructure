@@ -109,6 +109,42 @@ spec:
             - containerPort: 8083
               name: rm
 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unb-service
+spec:
+  selector:
+    app: unb
+  ports:
+    - port: 6379
+      targetPort: 6379
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unb
+spec:
+  selector:
+    matchLabels:
+      app: unb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: unb
+    spec:
+      containers:
+        - image: redis:7.2.4
+          name: unb
+          ports:
+            - containerPort: 6379
+              name: unb
+
 ---
 apiVersion: v1
 kind: Service
